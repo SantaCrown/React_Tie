@@ -1,0 +1,151 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// model User {
+//   id       String  @id @default(auto()) @map("_id") @db.ObjectId
+//   email    String  @unique
+//   name     String?
+//   password String
+// }
+
+
+model User {
+  id                 String          @id @default(auto()) @map("_id") @db.ObjectId
+  username           String          @unique
+  email              String          @unique
+  password           String
+  pricingPlan        PricingPlan?    @relation(fields: [pricingPlanId], references: [id])
+  pricingPlanId      String?         @db.ObjectId
+  subscriptionStatus SubscriptionStatus @default(Active)
+  subscriptionEnd    DateTime?
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @default(now())
+  apiKeys ApiKey[]
+  keywords  Keyword[]
+  article Article[]
+}
+
+enum SubscriptionStatus {
+  Active
+  Expired
+}
+
+model PricingPlan {
+  id        String       @id @default(auto()) @map("_id") @db.ObjectId
+  name      String       @unique
+  features  Feature[]
+  period    Period
+  price     Float
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  user      User[]
+}
+
+
+enum Period {
+  Monthly
+  Annually
+}
+
+model Feature {
+  id           String       @id @default(auto()) @map("_id") @db.ObjectId
+  featureName  String
+  limit        Int
+  pricingPlan  PricingPlan  @relation(fields: [pricingPlanId], references: [id])
+  pricingPlanId String      @db.ObjectId
+}
+
+model ApiKey {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  user            User     @relation(fields: [userId], references: [id])
+  userId          String   @db.ObjectId
+  wordpressApiKey String?
+  shopifyApiKey   String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Keyword {
+  id             String         @id @default(auto()) @map("_id") @db.ObjectId
+  keyword        String         @unique
+  volume         Int            @default(1000)
+  status         KeywordStatus  @default(NotStarted)
+  downloadStatus Boolean        @default(false)
+  writingStatus  Boolean        @default(false)
+  user            User     @relation(fields: [userId], references: [id])
+  userId          String   @db.ObjectId
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+enum KeywordStatus {
+  Created
+  NotStarted
+}
+
+model Prompt {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  prompt    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Article {
+  id                   String         @id @default(auto()) @map("_id") @db.ObjectId
+  title                String              @map("title")
+  content              Json                @map("content")
+  subKeywords          String[]            @map("subKeywords")
+  titleslist           Json
+  image                String?             @map("image")
+  competingArticles    Json
+  keywords             Json                
+  titlelimit           Int?                @default(3)
+  configurationlimit   Int?                @default(3)
+  content1limit        Int?                @default(3)
+  user                 User?               @relation(fields: [userId], references: [id])
+userId                 String              @db.ObjectId
+  status               String              @default("Draft")
+  cmd                  Json?               @map("cmd")
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+}
+
+// model SubKeyword {
+//   id             String         @id @default(auto()) @map("_id") @db.ObjectId
+//   keyword      String    @map("keyword")
+//   suggestions  String[]
+//   choosed      Boolean   @default(false)
+//   createdAt    DateTime  @default(now())
+//   updatedAt    DateTime  @updatedAt
+// }
+
+// model Title {
+//   id             String         @id @default(auto()) @map("_id") @db.ObjectId
+//   title        String    @map("title")
+//   keywords     String[]
+//   subKeywords  String[]
+//   isSelected   Boolean   @default(false)
+//   createdAt    DateTime  @default(now())
+//   updatedAt    DateTime  @updatedAt
+// }
+
+// model CompetingArticle {
+//   id             String         @id @default(auto()) @map("_id") @db.ObjectId
+//   title        String    @map("title")
+//   url          String    @map("url")
+//   snippet      String    @map("snippet")
+//   createdAt    DateTime  @default(now())
+//   updatedAt    DateTime  @updatedAt
+// }
+
+
+
