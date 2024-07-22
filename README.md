@@ -1,3 +1,31 @@
+# AI Article Generation Tool
+
+This project is an AI-powered article generation tool built with [Next.js](https://nextjs.org/). It leverages artificial intelligence to generate articles based on user input.
+
+## Features
+
+- Generate articles using AI based on keywords or topics.
+- User-friendly interface built with Next.js.
+- Configurable with environment variables for API integration.
+
+## Installation
+
+To get started with this project, follow these steps:
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) (>= 14.x)
+- [Yarn](https://yarnpkg.com/) (optional, but recommended)
+
+### Clone the Repository
+
+```sh
+git clone https://github.com/yourusername/ai-article-generation-tool.git
+cd ai-article-generation-tool
+```
+
+
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
